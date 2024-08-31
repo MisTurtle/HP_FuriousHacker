@@ -1,0 +1,26 @@
+FuriousHacker Beta - Evaluation Sheet
+
+
+Les arrivants en 3A sont répartis en groupes de 5 et s'affrontent deux par deux dans le but de se voir octroyer un précieux point.
+Un ordinateur est mis à disposition de chaque équipe et sert de poste de contrôle. 
+Il relève de chaque équipe de trouver sa propre organisation pour compléter un maximum d'épreuves avant la fin du temps impartie de 10 minutes.
+Photographier les énoncés et utiliser internet est autorisé et encouragé.
+
+
+1) Nb. d'épreuves réussies lors de la première utilisation : ?/10
+
+2) Nb. points obtenus lors de la première utilisation : ????
+
+3) Intuitivité des contrôles : ?/10
+	[+] Remarques : ...
+
+4) Esthétique de l'application : ?/10
+	[+] Remarques : ...
+
+5) Difficulté globale des challenges adaptée à des 3A de filières mixtes : ?/10
+	[+] Remarques : ...
+	
+6) Lisibilité des informations à l'écran (Problèmes d'affichages, couleurs pas assez différentiables, ...) : ?/10
+	[+] Remarques : ...
+
+7) Commentaires additionnels :
