@@ -3,6 +3,7 @@ from elements.Elements import Button, BinaryDropText, PulsingImage, PulsingText,
 from elements.Types import ElementGroup
 from providers import SpriteProvider, ColorProvider
 from scene import Scene, scene_manager
+from utils import C
 
 
 class MenuScene(Scene):
@@ -26,3 +27,5 @@ class MenuScene(Scene):
 			relx=0.5, rely=0.7
 		).set_relative_height(0.15)
 		self.add_element(start_btn)
+		start_btn.on("mouse_enter", lambda: C.glitch())
+		start_btn.on("mouse_leave", lambda: C.unglitch())

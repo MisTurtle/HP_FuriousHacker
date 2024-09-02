@@ -24,6 +24,7 @@ class StatementAnswerChallenge(Challenge):
 			self.text_input.on("type", lambda: self.submit_answer() if len(self.text_input.get_content()) == len(answer) else None)
 		else:
 			self.submit_btn = Button(SpriteAnimation(SpriteProvider.get("Btn_Submit.png"), [1], [64], (570, 60)), on_click=self.submit_answer)
+		self.text_input.on("type", lambda: self.text_input.shake(5, 0.15, self.text_input.SHAKE_INSTANT))
 
 		if image is not None:
 			self.image = Sprite(image)

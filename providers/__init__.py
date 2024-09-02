@@ -1,5 +1,5 @@
 import os
-from typing import Callable
+from typing import Callable, Any
 
 import pygame
 from utils import Provider, LoadOnGetProvider
@@ -39,7 +39,7 @@ SpriteProvider: Provider[str, pygame.Surface] = LoadOnGetProvider[str, pygame.Su
 	lambda x: pygame.image.load("resources/sprites/" + x)
 )
 ColorProvider: Provider[str, pygame.color.Color] = Provider[str, pygame.color.Color]()
-ShaderProvider: Provider[str, Callable[[pygame.Surface], None]] = Provider[str, Callable[[pygame.Surface], None]]()
+ShaderProvider: Provider[str, Callable[[pygame.Surface, float], Any]] = Provider[str, Callable[[pygame.Surface, float], Any]]()
 
 
 def read_file(path: str) -> str:

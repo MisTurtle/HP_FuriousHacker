@@ -14,7 +14,8 @@ from utils import C
 
 class GameScene(Scene):
 
-	GAME_TIME = 60 * 10 + 3  # seconds
+	# GAME_TIME = 60 * 10 + 3  # seconds
+	GAME_TIME = 60 + 3
 
 	challenge_interface: ChallengeInterface = None
 	global_countdown: Timer = None
@@ -47,7 +48,7 @@ class GameScene(Scene):
 		shaking_starts = 60
 		shaking_level_2 = 30
 
-		def emergency_shader(surface: pygame.Surface):
+		def emergency_shader(surface: pygame.Surface, t: float):
 			if self.global_countdown.get_time() > emergency_step_1:
 				period = 0.75
 			elif self.global_countdown.get_time() > emergency_step_2:
@@ -56,13 +57,14 @@ class GameScene(Scene):
 				period = 0.20
 			alpha = 1, 60
 			emergency = pygame.Surface(surface.get_size())
-			emergency.set_alpha(int(alpha[0] + (alpha[1] - alpha[0]) * (1 + math.cos(self.global_countdown.get_time() / period)) / 2))
+			emergency.set_alpha(int(alpha[0] + (alpha[1] - alpha[0]) * (1 + math.cos(t / period)) / 2))
 			emergency.fill((255, 0, 0))
 			surface.blit(emergency, (0, 0))
 
 		self.global_countdown.add_trigger(TimerTrigger(TimerTrigger.DROPS_BELOW, emergency_starts, lambda: ShaderProvider.set("emergency_timer", emergency_shader)))
 		self.global_countdown.add_trigger(TimerTrigger(TimerTrigger.DROPS_BELOW, shaking_starts, lambda: self.points_display.shake(5, shaking_starts, self.global_countdown.SHAKE_SMOOTH_IN)))
 		self.global_countdown.add_trigger(TimerTrigger(TimerTrigger.DROPS_BELOW, shaking_level_2, lambda: self.global_countdown.shake(5, shaking_level_2, self.global_countdown.SHAKE_SMOOTH_IN)))
+		self.global_countdown.add_trigger(TimerTrigger(TimerTrigger.DROPS_BELOW, emergency_step_2, lambda: C.glitch()))
 
 	def on_set_inactive(self):
 		super().on_set_inactive()

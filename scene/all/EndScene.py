@@ -6,6 +6,7 @@ from elements.Types import ElementGroup
 from game import challenge_manager
 from providers import ColorProvider, SpriteProvider
 from scene import Scene
+from utils import C
 
 
 class EndScene(Scene):
@@ -35,3 +36,4 @@ class EndScene(Scene):
 
 	def on_set_active(self):
 		self.points_display.set_content(f"Résultat : {challenge_manager.recompute_points():.0f} points")
+		C.unglitch()
