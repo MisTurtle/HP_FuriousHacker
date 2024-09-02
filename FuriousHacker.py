@@ -3,6 +3,8 @@ import sys
 
 if getattr(sys, 'frozen', False):
 	os.chdir(sys._MEIPASS)
+	import pyi_splash
+	pyi_splash.close()
 
 import contextlib
 with contextlib.redirect_stdout(None):

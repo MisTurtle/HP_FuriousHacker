@@ -40,22 +40,13 @@ class ChallengeManager:
 		return self._points
 
 	def init_challenges(self, container: ChallengeInterface):
-		self.add_challenge(MemoryChallenge(
+		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"...", "///",
+			"Memories, memories", "Te souviens-tu du nom du club ?",
 			"Benchmark", 1,
-			container, "###",
-			images=[
-				SpriteProvider.get('memory_1/1.png'),
-				SpriteProvider.get('memory_1/2.png'),
-				SpriteProvider.get('memory_1/3.png'),
-				SpriteProvider.get('memory_1/4.png'),
-				SpriteProvider.get('memory_1/5.png'),
-				SpriteProvider.get('memory_1/6.png'),
-				SpriteProvider.get('memory_1/7.png'),
-				SpriteProvider.get('memory_1/8.png')
-			],
-			clock=60
+			container, "Decent !", "Quel est le nom du club?",
+			"Honeypot Hacker", "________ ______",
+			SpriteAnimation(SpriteProvider.get("HoneyPot_Logo_Nameless.png"), [1], [64], (1051, 843))
 		))
 		self.add_challenge(TypingChallenge(
 			len(self._challenges),

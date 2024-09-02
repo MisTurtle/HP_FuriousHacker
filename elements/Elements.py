@@ -629,7 +629,7 @@ class TextArea(TextDisplay, Typable):
 			self.lock_pos(_)
 			return self
 		else:
-			self.content_size = len(self.get_content().splitlines())
+			self.content_size = max(1, len(self.get_content().splitlines()))
 			return super()._recompute_size()
 
 	def is_enabled(self) -> bool:
@@ -888,4 +888,3 @@ class DrawingGrid(ElementGroup):
 		cell: DrawingCell
 		for cell in self.get_elements():
 			cell.set_filled_color(cell_color)
-
