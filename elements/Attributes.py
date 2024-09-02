@@ -1,6 +1,6 @@
 import math
 import os.path
-from typing import Callable, Any, Union
+from typing import Callable, Any, Union, overload
 
 import pygame
 
@@ -292,3 +292,32 @@ class FontSettings:
 
 	def copy(self) -> 'FontSettings':
 		return FontSettings(self._font_path, self._font_size, self._color)
+
+
+class TimerTrigger:
+
+	DROPS_BELOW = 0
+	REACHES = 1
+	IS_BETWEEN = 2
+
+	def __init__(self, trigger_type: int, threshold: Union[float, tuple[float, float]], handler: Callable[[], Any], rm_on_trigger: bool = True):
+		if trigger_type != TimerTrigger.IS_BETWEEN and isinstance(threshold, tuple):
+			raise ValueError("Timer trigger window can only be a range when trigger type is TimerTrigger.IS_BETWEEN (" + str(
+				TimerTrigger.IS_BETWEEN) + ")")
+		self.trigger_type = trigger_type
+		self.threshold = threshold
+		self.handler = handler
+		self.rm_on_trigger = rm_on_trigger
+
+	def is_applicable(self, _from: Union[float, None], _to: float):
+		match self.trigger_type:
+			case self.DROPS_BELOW:
+				return _from >= self.threshold >= _to if _from is not None else self.threshold >= _to
+			case self.REACHES:
+				return _from <= self.threshold <= _to if _from is not None else self.threshold <= _to
+			case self.IS_BETWEEN:
+				self.threshold: tuple[float, float]
+				return self.threshold[0] >= _to >= self.threshold[1]
+
+
+

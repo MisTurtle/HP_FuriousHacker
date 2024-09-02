@@ -40,30 +40,59 @@ class ChallengeManager:
 		return self._points
 
 	def init_challenges(self, container: ChallengeInterface):
+		self.add_challenge(MemoryChallenge(
+			len(self._challenges),
+			"...", "///",
+			"Benchmark", 1,
+			container, "###",
+			images=[
+				SpriteProvider.get('memory_1/1.png'),
+				SpriteProvider.get('memory_1/2.png'),
+				SpriteProvider.get('memory_1/3.png'),
+				SpriteProvider.get('memory_1/4.png'),
+				SpriteProvider.get('memory_1/5.png'),
+				SpriteProvider.get('memory_1/6.png'),
+				SpriteProvider.get('memory_1/7.png'),
+				SpriteProvider.get('memory_1/8.png')
+			],
+			clock=60
+		))
 		self.add_challenge(TypingChallenge(
 			len(self._challenges),
-			"Newbie Typerman", "Ecris un programme court en moins de 25 secondes", 1,
+			"Newbie Typerman", "Ecris un programme court en moins de 25 secondes",
+			"Benchmark", 1,
 			container, None,
 			clock=25, text=FileProvider.get("NewbieTyperman_Sample.py")
 		))
 		self.add_challenge(TypingChallenge(
 			len(self._challenges),
-			"Expert Typerman", "Ecris un programme complexe en moins de 45 secondes", 4,
+			"Expert Typerman", "Ecris un programme complexe en moins de 45 secondes",
+			"Benchmark", 4,
 			container, None,
 			clock=45, text=FileProvider.get("ExpertTyperman_Sample.py")
 		))
 		self.add_challenge(WordMatchingChallenge(
 			len(self._challenges),
-			"Hardly Clever", "Connaissance du matériel", 3,
+			"Hardly Clever", "Connaissance du matériel",
+			"Hardware", 3,
 			container, "You know your parts !",
 			json.loads(FileProvider.get("HardwareGuessingList.json")),
 			"Reconstitue le nom du matériel informatique avec les lettres mélangées"
 		))
+		self.add_challenge(StatementAnswerChallenge(
+			len(self._challenges),
+			"Identicon Part 1", "Recherche en source ouverte",
+			"OSINT", 2,
+			container, "You know my name ;-;",
+			"Je suis Byron CHOLET, étudiant à Polytech Angers. Trouve le nom d'utilisateur de mon compte Github.",
+			lambda answer: answer.lower() == "misturtle", None
+		))
 		self.add_challenge(IdenticonDrawingChallenge(
 			len(self._challenges),
-			"Identicon", "Recherce en source ouverte", 3,
+			"Identicon Part 2", "Recherche en source ouverte",
+			"OSINT", 3,
 			container, "Openly Intelligent ^_^",
-			"Je suis Byron CHOLET, étudiant à Polytech Angers. Trouve l'identicon de mon compte Github en me recherchant sur internet.",
+			"Tu connais maintenant mon compte GitHub. Trouve l'identicon associé à celui-ci.",
 			[
 				[True, True, True, True, True],
 				[True, True, True, True, True],
@@ -75,20 +104,23 @@ class ChallengeManager:
 		# 47°28'47"N 0°35'23.2"W
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"Exact Positioning", "Des coordonnées pratiques", 2,
+			"Exact Positioning", "Des coordonnées pratiques",
+			"OSINT", 2,
 			container, "///what.the.f*ck", "Décrire l'arrêt Notre-dame-du-Lac (GPS : 47\u03b128'47\"N   0\u03b135'23.2\"W) avec 3 mots", "///inactif.isoler.drap", "///_______.______.____"
 		))
 
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"Dot LED signal", "Dissimulation d'informations", 5,
+			"Dot LED signal", "Dissimulation d'informations",
+			"Stéganographie", 5,
 			container, "|'-_-'|", "Un code à 4 chiffres se cache derrière ces signaux", "6279", "____",
 			SpriteAnimation(SpriteProvider.get("Stega2.png"), [1], [64], (600, 250)))
 		)
 
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"._.", "Bip boop, boop bip?", 1,
+			"._.", "Bip boop, boop bip?",
+			"Cryptographie", 1,
 			container,
 			# SOS
 			"... --- ...",
@@ -98,7 +130,8 @@ class ChallengeManager:
 
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"Magic Hashes", "Faille de typage", 5,
+			"Magic Hashes", "Faille de typage",
+			"Hacking", 5,
 			container,
 			"Welcome home, admin",
 			"Trouver un mot de passe pour passer la vérification d'administrateur",
@@ -109,14 +142,16 @@ class ChallengeManager:
 		))
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"Can't see no evil", "On peut pas zoomer ?", 1,
+			"Can't see no evil", "On peut pas zoomer ?",
+			"Stéganographie", 1,
 			container,
 			"Decent sight ! D:",
 			"\u03b1w\u03b1 Regarde de près", "h1ddenG3m", "_________", SpriteAnimation(SpriteProvider.get('Stega1.png'), [1], [64], (640, 452))
 		))
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"Counting sheep", "1, 2, 3, 4, ..., zzz", 2,
+			"Counting sheep", "1, 2, 3, 4, ..., zzz",
+			"Logique", 2,
 			container,
 			"Not asleep yet? Classic.",
 			"Combien de carrés se cachent dans l'image?", lambda ans: ans == "385" or ans == "0x181", None, SpriteAnimation(SpriteProvider.get('Logic1.png'), [1], [64], (342, 342))

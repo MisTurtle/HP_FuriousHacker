@@ -27,6 +27,14 @@ class Provider(Generic[Kt, Vt]):
 	def set(self, key: Kt, value: Vt):
 		self.items[key] = value
 
+	def rm(self, key: Kt):
+		if key not in self.items:
+			return
+		del self.items[key]
+
+	def clear(self):
+		self.items.clear()
+
 
 class LoadOnGetProvider(Provider[Kt, Vt]):
 
@@ -38,5 +46,3 @@ class LoadOnGetProvider(Provider[Kt, Vt]):
 		if key not in self.items and default is None:
 			self.set(key, self.load_function(key))
 		return super().get(key, default)
-
-

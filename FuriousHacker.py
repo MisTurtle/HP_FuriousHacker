@@ -64,6 +64,8 @@ while AppState.is_running() and scene_manager.get_current_scene() is not None:
 		EventHandlers.get(event.type, lambda _: None)(event)
 	scene_manager.get_current_scene().update(elapsed / 1000)
 	scene_manager.get_current_scene().draw(screen)
+	for shader in providers.ShaderProvider.get_all().values():
+		shader(screen)
 	pygame.display.update()
 	elapsed = clock.tick(AppState.get_target_frame_rate())
 	AppState.register_frame_time(1000 / elapsed)

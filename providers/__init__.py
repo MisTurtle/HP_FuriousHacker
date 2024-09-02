@@ -1,4 +1,6 @@
 import os
+from typing import Callable
+
 import pygame
 from utils import Provider, LoadOnGetProvider
 
@@ -14,6 +16,7 @@ def __load_colors():
 	# ColorProvider.set("fg", pygame.Color(0xa2, 0xba, 0xeb))
 	ColorProvider.set("placeholder", pygame.Color(0x2e, 0x42, 0x61))
 	ColorProvider.set("fg2", pygame.Color(0x25, 0x32, 0x4d))
+	ColorProvider.set("category", pygame.Color(0x88, 0xf7, 0x5c))
 	ColorProvider.set("error", pygame.Color(0xf2, 0x74, 0x55))
 	ColorProvider.set("star_level_0", pygame.Color(0xff, 0xff, 0xff))
 	ColorProvider.set("star_level_1", pygame.Color(0x91, 0xed, 0x64))
@@ -36,6 +39,7 @@ SpriteProvider: Provider[str, pygame.Surface] = LoadOnGetProvider[str, pygame.Su
 	lambda x: pygame.image.load("resources/sprites/" + x)
 )
 ColorProvider: Provider[str, pygame.color.Color] = Provider[str, pygame.color.Color]()
+ShaderProvider: Provider[str, Callable[[pygame.Surface], None]] = Provider[str, Callable[[pygame.Surface], None]]()
 
 
 def read_file(path: str) -> str:

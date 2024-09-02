@@ -25,7 +25,7 @@ class EndScene(Scene):
 		# Logo goes till 0.3 + 0.33/2 = 0.3 + 0.165 = 0.435
 
 		self.time_out_text = TextDisplay(FontSettings("resources/fonts/Start.otf", 95, ColorProvider.get("fg"))).set_content("Time Out !")
-		self.points_display = PulsingText(FontSettings("resources/fonts/Start.otf", 95, ColorProvider.get("fg"))).set_content("Résultat : 0.00 points")
+		self.points_display = PulsingText(FontSettings("resources/fonts/Start.otf", 95, ColorProvider.get("fg"))).set_content("Résultat : 0 points")
 		self.points_prompt = ElementGroup([self.time_out_text, self.points_display]).set_relative_height(0.18).set_relative_width(1)
 
 		self.time_out_text.set_anchor("midtop").set_relative_height(0.45).set_relative_pos((0.5, 0))
@@ -34,4 +34,4 @@ class EndScene(Scene):
 		self.add_element(self.points_prompt.set_anchor("midtop").set_relative_pos((0.5, 0.75)))
 
 	def on_set_active(self):
-		self.points_display.set_content(f"Résultat : {challenge_manager.recompute_points():.2f} points")
+		self.points_display.set_content(f"Résultat : {challenge_manager.recompute_points():.0f} points")

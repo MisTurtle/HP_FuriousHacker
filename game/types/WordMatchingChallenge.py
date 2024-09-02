@@ -10,8 +10,8 @@ from utils import C
 
 class WordMatchingChallenge(Challenge):
 
-	def __init__(self, chall_id: int, name: str, description: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], word_list: dict[str, str], guideline: str):
-		super().__init__(chall_id, name, description, difficulty, container, end_msg)
+	def __init__(self, chall_id: int, name: str, description: str, category: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], word_list: dict[str, str], guideline: str):
+		super().__init__(chall_id, name, description, category, difficulty, container, end_msg)
 		self.word_count = len(word_list)
 		assert self.word_count > 0
 		self.statements, self.answers = list(word_list.values()), list(word_list.keys())
@@ -26,7 +26,7 @@ class WordMatchingChallenge(Challenge):
 			self.guideline_display.set_relative_width(0.98)
 		self.skip_word_button = Button(SpriteAnimation(SpriteProvider.get("Btn_Skip.png"), frame_count=[1], frame_time=[60], frame_size=(570, 60)), on_click=lambda: self.skip_word())
 
-		self.answer_display.on("type", lambda _: self.submit_answer() if len(self.answer_display.get_content()) == len(self.get_current_tuple()[0]) else None)
+		self.answer_display.on("type", lambda: self.submit_answer() if len(self.answer_display.get_content()) == len(self.get_current_tuple()[0]) else None)
 
 	def update_word_guess(self):
 		tup = self.get_current_tuple()

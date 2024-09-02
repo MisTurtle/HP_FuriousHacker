@@ -1,4 +1,6 @@
 from typing import Union
+
+from providers import ShaderProvider
 from scene.Scene import Scene
 from utils import Singleton, Provider
 

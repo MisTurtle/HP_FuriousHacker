@@ -8,8 +8,8 @@ from providers import ColorProvider, SpriteProvider
 
 class StatementAnswerChallenge(Challenge):
 
-	def __init__(self, chall_id: int, name: str, description: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], statement: str, answer: Union[str, Callable[[str], bool]], hint: Union[None, str], image: Union[None, SpriteAnimation] = None):
-		super().__init__(chall_id, name, description, difficulty, container, end_msg)
+	def __init__(self, chall_id: int, name: str, description: str, category: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], statement: str, answer: Union[str, Callable[[str], bool]], hint: Union[None, str], image: Union[None, SpriteAnimation] = None):
+		super().__init__(chall_id, name, description, category, difficulty, container, end_msg)
 		self.statement_display = TextDisplay(FontSettings("resources/fonts/Start.ttf", 75, ColorProvider.get('fg')), content=statement)
 		self.text_input = TextArea(
 			FontSettings("resources/fonts/Code.ttf", 75, ColorProvider.get('fg')),
@@ -21,7 +21,7 @@ class StatementAnswerChallenge(Challenge):
 		)
 		self.answer = answer
 		if self.has_static_answer():
-			self.text_input.on("type", lambda _: self.submit_answer() if len(self.text_input.get_content()) == len(answer) else None)
+			self.text_input.on("type", lambda: self.submit_answer() if len(self.text_input.get_content()) == len(answer) else None)
 		else:
 			self.submit_btn = Button(SpriteAnimation(SpriteProvider.get("Btn_Submit.png"), [1], [64], (570, 60)), on_click=self.submit_answer)
 
@@ -38,7 +38,7 @@ class StatementAnswerChallenge(Challenge):
 			self.text_input.disable().blink(ColorProvider.get("success"), lambda: self.end(1))
 		else:
 			self.text_input.disable().blink(ColorProvider.get("error"), lambda: (self.text_input.enable(), self.text_input.set_content("")))
-		self.text_input.shake(15, 0.25)
+		self.text_input.shake(15, 0.25, self.text_input.SHAKE_SMOOTH_IN_OUT)
 
 	def start_challenge(self):
 		if self.is_fully_completed():

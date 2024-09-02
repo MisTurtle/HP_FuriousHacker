@@ -5,7 +5,7 @@ import string
 import pygame
 
 from typing import Callable, Union, Any
-from elements.Attributes import SpriteAnimation, Animation, FontSettings
+from elements.Attributes import SpriteAnimation, Animation, FontSettings, TimerTrigger
 from elements.Types import SceneElement, Hoverable, Pulsing, ElementGroup, Typable
 from game import Challenge
 from providers import ColorProvider, SpriteProvider
@@ -155,7 +155,7 @@ class Button(Hoverable, Sprite):
 
 	def set_click_callback(self, handler: Callable[[], Any]) -> 'Hoverable':
 		self.clear("click")
-		self.on("click", lambda el: el.get_animation("click").start().then(lambda: handler()))
+		self.on("click", lambda: self.get_animation("click").start().then(lambda: handler()))
 		return self
 
 	def set_relative_width(self, relw: float, keep_ratio: bool = True, holder: Union[pygame.Rect, None] = None) -> 'SceneElement':
@@ -249,10 +249,11 @@ class ChallengeCard(ElementGroup, Hoverable):
 		)
 		title = TextDisplay(FontSettings("resources/fonts/Code.ttf", 28, ColorProvider.get("fg")))
 		description = TextDisplay(FontSettings("resources/fonts/Start.otf", 26, ColorProvider.get("fg")))
+		category = TextDisplay(FontSettings("resources/fonts/Start.otf", 26, ColorProvider.get("category")))
 		score = TextDisplay(FontSettings("resources/fonts/Code.ttf", 26, ColorProvider.get("fg")))
 		difficulty = TextDisplay(FontSettings("resources/fonts/Starz 2.ttf", 26, ColorProvider.get("star_level_0")))
 
-		return [start_button, title, description, score, difficulty]
+		return [start_button, title, description, category, score, difficulty]
 
 	def __init__(self, challenge: Challenge):
 		from game import challenge_manager
@@ -282,11 +283,14 @@ class ChallengeCard(ElementGroup, Hoverable):
 	def get_description_display(self) -> TextDisplay:
 		return self.get_elements()[2]
 
-	def get_score_display(self) -> TextDisplay:
+	def get_category_display(self) -> TextDisplay:
 		return self.get_elements()[3]
 
-	def get_difficulty_display(self) -> TextDisplay:
+	def get_score_display(self) -> TextDisplay:
 		return self.get_elements()[4]
+
+	def get_difficulty_display(self) -> TextDisplay:
+		return self.get_elements()[5]
 
 	def get_target_location(self) -> tuple[float, float]:
 		return self.target_location
@@ -298,7 +302,7 @@ class ChallengeCard(ElementGroup, Hoverable):
 		self.set_background_color(ColorProvider.get('fg'))
 		self.set_relative_width(0.25, False).set_relative_height(0.15).set_original_size(self.size)
 		self.set_anchor("center").set_relative_pos((0.5, 0.5))
-		self.on("drag", lambda el: el.set_target_location(self.get_position()))
+		self.on("drag", lambda: self.set_target_location(self.get_position()))
 
 	def setup_group_elements(self):
 		max_width = max(0, self.width - 20)  # Max width occupied by the elements
@@ -318,12 +322,19 @@ class ChallengeCard(ElementGroup, Hoverable):
 			.set_absolute_pos(title.get_position())\
 			.move((0, title.height))
 
+		category = self.get_category_display()
+		category.set_content("// " + self.challenge.get_category().title()) \
+			.set_anchor("midtop") \
+			.set_absolute_pos(description.get_position()) \
+			.set_max_width(max_width) \
+			.move((0, description.height))
+
 		difficulty = self.get_difficulty_display()
 		difficulty.set_content(("F" * self.challenge.get_difficulty()))\
 			.set_anchor("midtop") \
-			.set_absolute_pos(description.get_position())\
+			.set_absolute_pos(category.get_position())\
 			.set_max_width(max_width)\
-			.move((0, title.height + description.height))
+			.move((0, 2 * category.height))
 		difficulty.get_display_settings().set_color(ColorProvider.get("star_level_" + str(self.challenge.get_difficulty())))
 
 		score = self.get_score_display()
@@ -366,8 +377,8 @@ class ChallengeCard(ElementGroup, Hoverable):
 			self.get_animation("entry").reset().start()
 
 		for el in self.get_elements():
-			el.shake(10, 1)
-		self.shake(10, 1, _)
+			el.shake(10, 1, el.SHAKE_SMOOTH_IN_OUT)
+		self.shake(10, 1, self.SHAKE_SMOOTH_IN_OUT, _)
 
 	def refresh_text(self):
 		prefix = "Best"
@@ -410,6 +421,30 @@ class Timer(TextDisplay):
 		self.running = False
 		self.set_format(kwargs.get('format', '%H:%M:%S.%m'))
 		self.multiplier = 1
+		self.triggers: list[TimerTrigger] = []
+
+	def add_trigger(self, trigger: TimerTrigger):
+		if trigger in self.triggers:
+			return
+		self.triggers.append(trigger)
+		if trigger.is_applicable(None, self.current):
+			self.apply_trigger(trigger)
+
+	def rm_trigger(self, trigger: TimerTrigger):
+		if trigger not in self.triggers:
+			return
+		self.triggers.remove(trigger)
+
+	def apply_trigger(self, trigger: TimerTrigger):
+		trigger.handler()
+		if trigger.rm_on_trigger:
+			self.rm_trigger(trigger)
+
+	def get_triggers(self) -> list[TimerTrigger]:
+		return self.triggers
+
+	def clear_triggers(self):
+		self.triggers.clear()
 
 	def reset(self) -> 'Timer':
 		self.current = self.clock
@@ -460,11 +495,19 @@ class Timer(TextDisplay):
 
 	def tick(self, dt: float):
 		if self.running:
+			_from = self.current
 			self.current += dt * self.multiplier
 			self.current = min(self.limit[1], max(self.limit[0], self.current))
+
+			for trigger in self.triggers.copy():
+				if trigger.is_applicable(_from, self.current):
+					trigger.handler()
+					self.apply_trigger(trigger)
+
 			if (self.current == self.limit[1] and self.multiplier > 0) or (self.current == self.limit[0] and self.multiplier < 0):
 				self.call('timer_end')
 			self.set_content(self.get_display_time())
+		super().tick(dt)
 
 
 class ChallengeInterface(ElementGroup):
@@ -532,8 +575,8 @@ class TextArea(TextDisplay, Typable):
 		self.enabled = True
 		self.enable_multiline = kwargs.get("multiline", True)
 
-		self.on("type", lambda _: self._recompute_size())
-		self.on("erase", lambda _: self._recompute_size())
+		self.on("type", lambda: self._recompute_size())
+		self.on("erase", lambda: self._recompute_size())
 		self._recompute_size()
 
 	def blink(self, color: Union[pygame.Color, None], then: Union[Callable[[], Any], None]):
@@ -723,11 +766,11 @@ class DrawingCell(Hoverable):
 		self._border_color = kwargs.get("border_color", ColorProvider.get("fg2"))
 		self._filled = kwargs.get("filled", False)
 		self.add_animation("hover_color_transition", Animation(DrawingCell.COLOR_TRANSITION_DURATION).set_end_behavior(Animation.PAUSE_ON_END))
-		self.on("click", lambda _: self.invert_filled_state())
-		self.on("mouse_enter", lambda _: self.get_animation("hover_color_transition").set_progress_percent(1))
-		self.on("mouse_enter", lambda _: pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND))
-		self.on("mouse_leave", lambda _: self.get_animation("hover_color_transition").set_speed(-1).start() if not self.is_filled() else None)
-		self.on("mouse_leave", lambda _: pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW))
+		self.on("click", lambda: self.invert_filled_state())
+		self.on("mouse_enter", lambda: self.get_animation("hover_color_transition").set_progress_percent(1))
+		self.on("mouse_enter", lambda: pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND))
+		self.on("mouse_leave", lambda: self.get_animation("hover_color_transition").set_speed(-1).start() if not self.is_filled() else None)
+		self.on("mouse_leave", lambda: pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW))
 
 	def is_filled(self) -> bool:
 		return self._filled
@@ -780,8 +823,8 @@ class DrawingGrid(ElementGroup):
 		self._filled_color = kwargs.get("filled_color", ColorProvider.get("fg"))
 		self._blink_color = ColorProvider.get("error")
 		self.set_original_size((20 * grid_size[0], 20 * grid_size[1]))
-		self.on("resize", lambda _: self.refresh_cells_size())
-		self.on("move", lambda _: self.refresh_cells_size())
+		self.on("resize", lambda: self.refresh_cells_size())
+		self.on("move", lambda: self.refresh_cells_size())
 		self.add_animation("blink", Animation(DrawingGrid.BLINK_TIME).set_end_behavior(Animation.RESET_ON_END))
 
 	def set_relative_width(self, relw: float, keep_ratio: bool = True, holder: Union[pygame.Rect, None] = None) -> 'SceneElement':

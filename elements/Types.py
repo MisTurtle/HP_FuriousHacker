@@ -23,6 +23,10 @@ class SceneElement(pygame.Rect, ABC):
 	WRAP_BOTH = WRAP_X | WRAP_Y
 	WRAP_NONE = 0b00
 
+	SHAKE_SMOOTH_IN_OUT = 0
+	SHAKE_SMOOTH_IN = 1
+	SHAKE_INSTANT = 2
+
 	@staticmethod
 	def relative_to_absolute(rel: float, holder: float) -> float:
 		return rel * holder
@@ -38,7 +42,7 @@ class SceneElement(pygame.Rect, ABC):
 		self.__anchor = "center"
 		self.__animations: dict[str, Animation] = {}
 		self.__zoom = 1, 1
-		self.__shake_force, self.__shake_return_pos = 0, (0, 0)
+		self.__shake_force, self.__shake_return_pos, self.__shake_mode = 0, (0, 0), self.SHAKE_SMOOTH_IN_OUT
 
 		x = kwargs.get("x", self.relative_to_absolute(kwargs.get("relx", 0), C.DISPLAY_RECT.width))
 		y = kwargs.get("y", self.relative_to_absolute(kwargs.get("rely", 0), C.DISPLAY_RECT.height))
@@ -58,12 +62,10 @@ class SceneElement(pygame.Rect, ABC):
 			self.listeners[event].append(callback)
 
 	def call(self, event: str):
-		# if event in ["text_complete", "timer_end"]:
-		# 	print("[DEBUG] ", self.__str__(), "Calling event : " + event)
 		if event not in self.listeners:
 			return
 		for callback in self.listeners[event]:
-			callback(self)
+			callback()
 
 	def lock_pos(self, operation: Callable[[], None]):
 		pos = getattr(self, self.__anchor)
@@ -171,17 +173,18 @@ class SceneElement(pygame.Rect, ABC):
 			return 1, 1
 		return self.width / self.__original_size[0], self.height / self.__original_size[1]
 
-	def shake(self, amplitude: float, duration: float, then: Union[Callable[[], None], None] = None):
+	def shake(self, amplitude: float, duration: float, mode: SHAKE_SMOOTH_IN_OUT, then: Union[Callable[[], None], None] = None):
 		assert duration > 0
 		anim = self.get_animation("shake")
 		if anim is None:
 			anim = Animation(duration)
 			self.add_animation("shake", anim)
+			self.__shake_return_pos = self.get_position()
 		else:
 			anim.reset().set_speed(anim.get_duration() / duration)
 
-		self.__shake_return_pos = self.get_position()
 		self.__shake_force = amplitude
+		self.__shake_mode = mode
 
 		def end_behavior(_):
 			anim.pause()
@@ -190,6 +193,12 @@ class SceneElement(pygame.Rect, ABC):
 				then()
 		anim.set_end_behavior(end_behavior)
 		anim.start()
+
+	def stop_shaking(self):
+		anim = self.get_animation("shake")
+		if anim is None:
+			return
+		anim.reset()
 
 	def move(self, delta: tuple[float, float], wrap: int = WRAP_NONE, holder: Union[pygame.Rect, None] = None) -> int:
 		holder = holder or self.get_holder()
@@ -224,9 +233,15 @@ class SceneElement(pygame.Rect, ABC):
 			animation.tick(dt)
 		shake_anim = self.get_animation("shake")
 		if shake_anim is not None and shake_anim.is_running():
-			c = math.sin(shake_anim.get_progress_percent() * math.pi)
+			c = 1
+			match self.__shake_mode:
+				case self.SHAKE_SMOOTH_IN_OUT:
+					c = math.sin(shake_anim.get_progress_percent() * math.pi)
+				case self.SHAKE_SMOOTH_IN:
+					c = math.sin(min(1., shake_anim.get_progress_percent() * 1.5) * math.pi / 2)
 			og = self.__shake_return_pos
 			self.set_absolute_pos((og[0] + (random.random() - 0.5) * self.__shake_force * c, og[1] + (random.random() - 0.5) * self.__shake_force * c))
+		self.call("tick")
 
 	def draw(self, where: pygame.Surface):
 		i = 0

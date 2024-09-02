@@ -10,8 +10,8 @@ from providers import ColorProvider, SpriteProvider
 
 class IdenticonDrawingChallenge(Challenge):
 
-	def __init__(self, chall_id: int, name: str, description: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], statement: str, answer: list[list[bool]]):
-		super().__init__(chall_id, name, description, difficulty, container, end_msg)
+	def __init__(self, chall_id: int, name: str, description: str, category: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], statement: str, answer: list[list[bool]]):
+		super().__init__(chall_id, name, description, category, difficulty, container, end_msg)
 		self.answer = answer
 		self.statement = TextDisplay(FontSettings("resources/fonts/Start.otf", 35, ColorProvider.get("fg")), content=statement)
 		self.grid = DrawingGrid((5, 5), hover_color=ColorProvider.get('placeholder'), filled_color=pygame.Color(255, 255, 255), empty_color=ColorProvider.get("bg"), border_color=ColorProvider.get("fg2"))

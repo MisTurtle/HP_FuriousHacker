@@ -10,12 +10,13 @@ class Challenge:
 	DIFFICULTY_MULTIPLIER = 0.2
 	RESULT_LEFT_MARGIN = 30  # px
 
-	def __init__(self, chall_id: int, name: str, description: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None]):
+	def __init__(self, chall_id: int, name: str, description: str, category: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None]):
 		self._id = chall_id
 		self._name = name
 		self._description = description
 		self._difficulty = difficulty
 		self._container = container
+		self._category = category
 		self.title_display = None
 		self.result = None
 		self.card = None
@@ -30,6 +31,9 @@ class Challenge:
 
 	def get_description(self) -> str:
 		return self._description
+
+	def get_category(self) -> str:
+		return self._category
 
 	def get_difficulty(self) -> int:
 		return self._difficulty

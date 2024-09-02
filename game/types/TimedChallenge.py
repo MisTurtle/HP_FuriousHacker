@@ -8,10 +8,10 @@ from providers import ColorProvider, SpriteProvider
 
 class TimedChallenge(Challenge):
 
-	def __init__(self, chall_id: int, name: str, description: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], **kwargs):
-		super().__init__(chall_id, name, description, difficulty, container, end_msg)
+	def __init__(self, chall_id: int, name: str, description: str, category: str, difficulty: int, container: ChallengeInterface, end_msg: Union[str, None], **kwargs):
+		super().__init__(chall_id, name, description, category, difficulty, container, end_msg)
 		self.timer_display = Timer(FontSettings("resources/fonts/Code.ttf", 30, ColorProvider.get('fg')), clock=kwargs.get('clock', 60)).as_countdown()
-		self.timer_display.on('timer_end', lambda timer: self.end(None))
+		self.timer_display.on('timer_end', lambda: self.end(None))
 
 	def get_timer(self) -> Timer:
 		return self.timer_display
