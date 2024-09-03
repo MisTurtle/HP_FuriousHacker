@@ -81,7 +81,7 @@ class ChallengeManager:
 		self.add_challenge(IdenticonDrawingChallenge(
 			len(self._challenges),
 			"Identicon Part 2", "Recherche en source ouverte",
-			"OSINT", 3,
+			"OSINT", 4,
 			container, "Openly Intelligent ^_^",
 			"Tu connais maintenant mon compte GitHub. Trouve l'identicon associé à celui-ci.",
 			[
