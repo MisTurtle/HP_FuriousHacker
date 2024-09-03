@@ -14,8 +14,8 @@ from utils import C
 
 class GameScene(Scene):
 
-	GAME_TIME = 60 * 10 + 3  # seconds
-	# GAME_TIME = 60 + 3
+	GAME_TIME = 60 * 10  # seconds
+	# GAME_TIME = 60 + 3  # seconds
 
 	challenge_interface: ChallengeInterface = None
 	global_countdown: Timer = None
@@ -26,7 +26,7 @@ class GameScene(Scene):
 
 		# Create Timer Text
 		self.points_display = TextDisplay(FontSettings("resources/fonts/Start.otf", 95, ColorProvider.get("fg"))).set_content("Points : 0")
-		self.global_countdown = Timer(FontSettings("resources/fonts/Code.ttf", 65, ColorProvider.get("fg")), clock=self.GAME_TIME).as_countdown().start()
+		self.global_countdown = Timer(FontSettings("resources/fonts/Code.ttf", 65, ColorProvider.get("fg")), clock=self.GAME_TIME).as_countdown()
 		self.display_group = ElementGroup([self.points_display, self.global_countdown])
 		self.display_group.set_anchor("center").set_relative_pos((0.5, 0.5))
 		self.points_display.set_relative_pos((0.5, 0.5)).move((0, - int(self.points_display.height / 2)))
@@ -74,6 +74,8 @@ class GameScene(Scene):
 	def start_challenge(self, chall: Challenge):
 		if self.active_challenge is not None:
 			return
+		if not self.global_countdown.running:
+			self.global_countdown.start()
 
 		for el in self.get_elements():
 			if isinstance(el, ChallengeCard):
