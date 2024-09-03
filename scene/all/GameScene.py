@@ -14,8 +14,8 @@ from utils import C
 
 class GameScene(Scene):
 
-	# GAME_TIME = 60 * 10 + 3  # seconds
-	GAME_TIME = 60 + 3
+	GAME_TIME = 60 * 10 + 3  # seconds
+	# GAME_TIME = 60 + 3
 
 	challenge_interface: ChallengeInterface = None
 	global_countdown: Timer = None

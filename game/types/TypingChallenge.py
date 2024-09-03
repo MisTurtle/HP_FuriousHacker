@@ -1,3 +1,4 @@
+import math
 from typing import Union
 
 from elements.Attributes import FontSettings
@@ -26,7 +27,7 @@ class TypingChallenge(TimedChallenge):
 	def get_result_str(self) -> str:
 		if self.result is None:
 			return "0/" + str(self.PERFECT_WPM) + " wpm"
-		return f"{self.result * self.PERFECT_WPM:.0f}/{self.PERFECT_WPM} wpm"
+		return f"{math.floor(self.result * self.PERFECT_WPM):.0f}/{self.PERFECT_WPM} wpm"
 
 	def reset_challenge(self):
 		super().reset_challenge()

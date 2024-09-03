@@ -50,17 +50,17 @@ class ChallengeManager:
 		))
 		self.add_challenge(TypingChallenge(
 			len(self._challenges),
-			"Newbie Typerman", "Ecris un programme court en moins de 25 secondes",
+			"Newbie Typerman", "Ecris un programme court en moins de 35 secondes",
 			"Benchmark", 1,
 			container, None,
-			clock=25, text=FileProvider.get("NewbieTyperman_Sample.py")
+			clock=35, text=FileProvider.get("NewbieTyperman_Sample.py")
 		))
 		self.add_challenge(TypingChallenge(
 			len(self._challenges),
-			"Expert Typerman", "Ecris un programme complexe en moins de 45 secondes",
+			"Expert Typerman", "Ecris un programme complexe en moins de 60 secondes",
 			"Benchmark", 4,
 			container, None,
-			clock=45, text=FileProvider.get("ExpertTyperman_Sample.py")
+			clock=60, text=FileProvider.get("ExpertTyperman_Sample.py")
 		))
 		self.add_challenge(WordMatchingChallenge(
 			len(self._challenges),
