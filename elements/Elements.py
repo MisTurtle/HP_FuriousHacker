@@ -214,6 +214,7 @@ class BinaryDropText(TextDisplay):
 		self._color_fg = ColorProvider.get("fg2")
 		self._color_bg = ColorProvider.get("bg")
 		self.__reset()
+		self.move((0, random.random() * C.DISPLAY_SIZE[1]))
 
 	def __reset(self):
 		self._coefficient = random.random()
@@ -241,14 +242,15 @@ class ChallengeCard(ElementGroup, Hoverable):
 
 	ENTRY_DURATION = 1.1
 
-	@staticmethod
-	def create_group_elements():
+	def create_group_elements(self):
 		start_button = Button(
-			SpriteAnimation(SpriteProvider.get("Btn_StartChallenge.png"), [1], [60], (570, 60)),
+			SpriteAnimation(SpriteProvider.get("Btn_StartChallenge.png"), [30], [0.008], None).set_mode(SpriteAnimation.MODE_CIRCULAR).pause(),
 			on_click=lambda _: None
 		)
+		start_button.on("mouse_enter", lambda: start_button.get_spritesheet().start())
+		start_button.on("mouse_leave", lambda: start_button.get_spritesheet().reset().pause())
 		title = TextDisplay(FontSettings("resources/fonts/Code.ttf", 28, ColorProvider.get("fg")))
-		description = TextDisplay(FontSettings("resources/fonts/Start.otf", 26, ColorProvider.get("fg")))
+		description = TextDisplay(FontSettings("resources/fonts/PurpleSmile-Regular.otf", 16, ColorProvider.get("fg")))
 		category = TextDisplay(FontSettings("resources/fonts/Start.otf", 26, ColorProvider.get("category")))
 		score = TextDisplay(FontSettings("resources/fonts/Code.ttf", 26, ColorProvider.get("fg")))
 		difficulty = TextDisplay(FontSettings("resources/fonts/Starz 2.ttf", 26, ColorProvider.get("star_level_0")))
@@ -258,7 +260,7 @@ class ChallengeCard(ElementGroup, Hoverable):
 	def __init__(self, challenge: Challenge):
 		from game import challenge_manager
 		self.challenge = challenge
-		super().__init__(ChallengeCard.create_group_elements())
+		super().__init__(self.create_group_elements())
 		self.setup_group_properties()
 		self.setup_group_elements()
 		self.anim_start_pos = C.DISPLAY_RECT.centerx - self.width / 2, C.DISPLAY_RECT.centery - self.height / 2
@@ -312,8 +314,9 @@ class ChallengeCard(ElementGroup, Hoverable):
 		title = self.get_title_display()
 		title.set_content(">/ " + self.challenge.get_name())\
 			.set_anchor("midtop")\
-			.set_relative_pos((0.5, 0.1))\
-			.set_max_width(max_width)
+			.set_relative_pos((0.5, 0.1))
+		if title.width > 0.95 * self.width:
+			title.set_relative_width(0.95)
 
 		description = self.get_description_display()
 		description.set_content(self.challenge.get_description()) \
@@ -337,21 +340,13 @@ class ChallengeCard(ElementGroup, Hoverable):
 			.move((0, 2 * category.height))
 		difficulty.get_display_settings().set_color(ColorProvider.get("star_level_" + str(self.challenge.get_difficulty())))
 
-		score = self.get_score_display()
-		score.set_content("Best : " + self.challenge.get_result_str())\
-			.set_anchor("midtop")\
-			.set_absolute_pos(difficulty.get_position())\
-			.set_max_width(max_width)\
-			.move((0, score_bot_margin))
-		score.get_display_settings().set_color(ColorProvider.get('fg'))
-
 		start_button = self.get_start_button()
-		start_button.set_relative_width(0.9)
+		start_button.set_relative_width(0.8)
 
-		self.set_original_size((self.width, title.height + description.height + difficulty.height + score_bot_margin + score.height + desc_bot_margin + start_button.height))
+		self.set_original_size((self.width, title.height + description.height + difficulty.height + score_bot_margin + desc_bot_margin + start_button.height))
 
 		start_button.set_anchor("midtop")\
-			.set_absolute_pos(score.get_position())\
+			.set_absolute_pos(difficulty.get_position())\
 			.set_anchor("center") \
 			.move((0, desc_bot_margin))
 		start_button.set_click_callback(lambda: scene_manager.get_current_scene().start_challenge(self.challenge))
@@ -359,7 +354,7 @@ class ChallengeCard(ElementGroup, Hoverable):
 	def get_challenge(self) -> Challenge:
 		return self.challenge
 
-	def on_fully_completed(self):
+	def go_away(self):
 		# Random angle method
 		# out_r = math.sqrt((C.DISPLAY_SIZE[0]) ** 2 + (C.DISPLAY_SIZE[1] ** 2)) * 1.5
 		# angle = random.random() * 2 * math.pi
@@ -379,13 +374,6 @@ class ChallengeCard(ElementGroup, Hoverable):
 		for el in self.get_elements():
 			el.shake(10, 1, el.SHAKE_SMOOTH_IN_OUT)
 		self.shake(10, 1, self.SHAKE_SMOOTH_IN_OUT, _)
-
-	def refresh_text(self):
-		prefix = "Best"
-		if self.challenge.is_fully_completed():
-			prefix = "Score"
-			self.get_start_button().set_enabled(False)
-		self.get_score_display().set_content(prefix + " : " + self.challenge.get_result_str())
 
 	def tick(self, dt: float):
 		super().tick(dt)

@@ -1,6 +1,5 @@
 from elements.Attributes import SpriteAnimation, PulseSettings, FontSettings
-from elements.Elements import Button, BinaryDropText, PulsingImage, PulsingText, TextDisplay
-from elements.Types import ElementGroup
+from elements.Elements import Button, BinaryDropText, PulsingImage
 from providers import SpriteProvider, ColorProvider
 from scene import Scene, scene_manager
 from utils import C
@@ -11,7 +10,7 @@ class MenuScene(Scene):
 	def __init__(self):
 		super().__init__()
 
-		for i in range(50):
+		for i in range(30):
 			self.add_element(BinaryDropText(
 					FontSettings("resources/fonts/Code.ttf", 30, ColorProvider.get("fg"))
 				))

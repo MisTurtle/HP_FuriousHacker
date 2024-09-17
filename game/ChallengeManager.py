@@ -1,4 +1,3 @@
-import hashlib
 import json
 import re
 
@@ -7,9 +6,9 @@ from elements.Elements import ChallengeInterface
 from game import Challenge
 from game.types.IdenticonDrawingChallenge import IdenticonDrawingChallenge
 from game.types.StatementAnswerChallenge import StatementAnswerChallenge
-from game.types.TypingChallenge import TypingChallenge
 from game.types.WordMatchingChallenge import WordMatchingChallenge
-from providers import FileProvider, SpriteProvider
+from providers import SpriteProvider, FileProvider
+from scene import scene_manager
 
 
 class ChallengeManager:
@@ -30,60 +29,100 @@ class ChallengeManager:
 	def add_challenge(self, c):
 		self._challenges.append(c)
 
-	def get_points(self) -> float:
-		return self._points
+	def add_point(self):
+		self._points += 1
+		if self._points == len(self._challenges):
+			scene_manager.set_active_scene(scene_manager.END_SCENE)
 
-	def recompute_points(self) -> float:
-		self._points = 0
-		for chall in self.get_challenges():
-			self._points += chall.compute_score(chall.get_result())
+	def get_points(self) -> float:
 		return self._points
 
 	def init_challenges(self, container: ChallengeInterface):
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"Memories, memories", "Te souviens-tu du nom du club ?",
-			"Benchmark", 1,
-			container, "Decent !", "Quel est le nom du club?",
-			"Honeypot Hacker", "________ ______",
-			SpriteAnimation(SpriteProvider.get("HoneyPot_Logo_Nameless.png"), [1], [64], (1051, 843))
-		))
-		self.add_challenge(TypingChallenge(
-			len(self._challenges),
-			"Newbie Typerman", "Ecris un programme court en moins de 35 secondes",
-			"Benchmark", 1,
-			container, None,
-			clock=35, text=FileProvider.get("NewbieTyperman_Sample.py")
-		))
-		self.add_challenge(TypingChallenge(
-			len(self._challenges),
-			"Expert Typerman", "Ecris un programme complexe en moins de 60 secondes",
-			"Benchmark", 4,
-			container, None,
-			clock=60, text=FileProvider.get("ExpertTyperman_Sample.py")
-		))
-		self.add_challenge(WordMatchingChallenge(
-			len(self._challenges),
-			"Hardly Clever", "Connaissance du matériel",
-			"Hardware", 3,
-			container, "You know your parts !",
-			json.loads(FileProvider.get("HardwareGuessingList.json")),
-			"Reconstitue le nom du matériel informatique avec les lettres mélangées"
+			"Weak password", "Retrouve le mot de passe du PC",
+			"Logique", 1,
+			container, "That's how they got in...\nAlways use strong passwords !",
+			"La note suivante a été trouvée auprès du PC compromis:\n\n\"Nom de mon club préféré, avec des chiffres à la place des lettres 'O', 'E' et 'A'",
+			"H0n3yp0t H4ck3r", "________ ______",
+			SpriteAnimation(SpriteProvider.get("HoneyPot_Logo_Nameless.png"), [1], [64], None)
 		))
 		self.add_challenge(StatementAnswerChallenge(
 			len(self._challenges),
-			"Identicon Part 1", "Recherche en source ouverte",
+			"A Hacker's mark", "Un message codé?",
+			"Cryptographie", 1,
+			container, "Seriously, morse code ?!",
+			"En ouvrant la session, l'admin a trouvé un fichier README.txt avec le contenu suivant.\nDécode-le pour voir s'il contient des infos importantes:\n.. -- / .-- ....- - -.-. .... .---- -. --. / -.-- ----- ..-",
+			"Im w4tch1ng y0u", "__ ________ ___", case_sensitive=True
+		))
+		self.add_challenge(StatementAnswerChallenge(
+			len(self._challenges),
+			"Hacker OS", "Trouver le système d'exploitation du hacker",
+			"OSINT", 1,
+			container, "Damn it, they know what they're doing !",
+			"Connaître le système d'exploitation utilisé par le hacker pourrait nous servir à l'infiltrer à notre tour...\nIl s'agit probablement de celui dont le logo est présenté ci-dessous.",
+			lambda x: x.lower() in ["kali", "kali linux", "linux kali"], None,
+			SpriteAnimation(SpriteProvider.get('kali.png'), [1], [64], None)
+		))
+		self.add_challenge(StatementAnswerChallenge(
+			len(self._challenges),
+			"Numeral Systems", "Comptons comme un ordinateur",
+			"Logique", 2,
+			container, "A hacker knows its numerals",
+			"Une capture réseau a dévoilé un flux constant de données vers la Russie.\n0b1000_0011  paquets d'une taille de  0x4AD  octets ont été transmis chaque minute.\nLe nombre d'octets volés en 5 minutes est donc, en base 10, de:",
+			"784035", None
+		))
+		self.add_challenge(StatementAnswerChallenge(
+			len(self._challenges),
+			"Network Mapping", "Mapper l'origine de l'attaque",
+			"Network", 2,
+			container, "We know where the attack came from !",
+			"Une adresse IP revient de manière récurrente dans les logs du PC.\nLe résultat d'un traceroute vers cette IP est joint ci-dessous\nDans quelle ville se situe le dernier serveur à répondre à la requête?",
+			lambda x: x.lower().replace(" ", "") in ["newyork", "newyorkcity", "nyc"], None, SpriteAnimation(SpriteProvider.get("Network1.png"), [1], [64], None)
+		))
+		self.add_challenge(StatementAnswerChallenge(
+			len(self._challenges),
+			"New Coordinates", "Localiser le pc de l'intrus",
 			"OSINT", 2,
-			container, "You know my name ;-;",
-			"Je suis Byron CHOLET, étudiant à Polytech Angers. Trouve le nom d'utilisateur de mon compte Github.",
-			lambda answer: answer.lower() == "misturtle", None
+			container, "///what.the.f*ck\n\nThey were at Starbucks !",
+			# "Des coordonnées GPS pointant vers l'intrus sont apparues: 47°28'29.5875\"N, 0°35'42.1800\"W\nOn devrait pouvoir s'en souvenir facilement...\nLe système ///what.3.words pourrait être idéal dans notre cas !",
+			"On a retrouvé un indice étrange dans les fichiers de l'attaque: ///wagon.ronce.rouiller\nIl s'agit peut-être d'un système de coordonnées? Retrouver depuis quel café l'individu s'est connecté",
+			"Starbucks", "_________"
+		))
+		self.add_challenge(WordMatchingChallenge(
+			len(self._challenges),
+			"Grocery List", "Reconstitue le nom du matériel informatique",
+			"Benchmark", 3,
+			container, "Hardly clever, I cancelled the order",
+			json.loads(FileProvider.get('HardwareGuessingList.json')),
+			"La carte bancaire de l'admin était enregistrée dans son navigateur.\nL'intrus en a profité pour faire ses courses et se construire un PC.\nReconsitue le nom du matériel informatique depuis les lettres mélangées:"
+		))
+		self.add_challenge(StatementAnswerChallenge(
+			len(self._challenges),
+			"Compromised User", "Découvre le mot de passe du hacker",
+			"Client Side", 3,
+			container, "You have their credentials !  B-)",
+			"Nous avons découvert à l'instant le code source du RAT fournissant un accès à distance au PC infecté.\nSi on trouve le mot de passe du hacker, on pourra peut-être nous infiltrer à notre tour sur ses serveurs.",
+			"R3m0teR4T", "_________",
+			SpriteAnimation(SpriteProvider.get("ClientSide1.png"), [1], [64], None),
+			case_sensitive=True
+		))
+		self.add_challenge(StatementAnswerChallenge(
+			len(self._challenges),
+			"Hidden Data", "Nouveau fond d'écran",
+			"Stéganographie", 3,
+			container, "They be toying with us !",
+			"Le hacker a osé changer le fond d'écran de l'admin !!!\nIl doit y avoir une information cachée sur l'image si on regarde de près !",
+			"h1ddenG3m", "_________",
+			SpriteAnimation(SpriteProvider.get("Stega1.png"), [1], [64], None),
+			case_sensitive=True
 		))
 		self.add_challenge(IdenticonDrawingChallenge(
 			len(self._challenges),
-			"Identicon Part 2", "Recherche en source ouverte",
+			"Online Identity", "L'identicon GitHub du hacker.",
 			"OSINT", 4,
-			container, "Openly Intelligent ^_^",
-			"Tu connais maintenant mon compte GitHub. Trouve l'identicon associé à celui-ci.",
+			container, "We discovered their online identity !",
+			"L'info la plus précieuse que nous possédons de l'intrus est le pseudo de son compte GitHub:  MisTurtle.\nIl faudrait que l'on puisse retrouver son identicon Github pour le tracer en ligne.\nJe crois qu'il y a un lien GitHub officiel pour l'obtenir...",
 			[
 				[True, True, True, True, True],
 				[True, True, True, True, True],
@@ -91,59 +130,4 @@ class ChallengeManager:
 				[False, False, True, False, False],
 				[True, False, False, False, True]
 			]
-		))
-		# 47°28'47"N 0°35'23.2"W
-		self.add_challenge(StatementAnswerChallenge(
-			len(self._challenges),
-			"Exact Positioning", "Des coordonnées pratiques",
-			"OSINT", 2,
-			container, "///what.the.f*ck", "Décrire l'arrêt Notre-dame-du-Lac (GPS : 47\u03b128'47\"N   0\u03b135'23.2\"W) avec 3 mots", "///inactif.isoler.drap", "///_______.______.____"
-		))
-
-		self.add_challenge(StatementAnswerChallenge(
-			len(self._challenges),
-			"Dot LED signal", "Dissimulation d'informations",
-			"Stéganographie", 5,
-			container, "|'-_-'|", "Un code à 4 chiffres se cache derrière ces signaux", "6279", "____",
-			SpriteAnimation(SpriteProvider.get("Stega2.png"), [1], [64], (600, 250)))
-		)
-
-		self.add_challenge(StatementAnswerChallenge(
-			len(self._challenges),
-			"._.", "Bip boop, boop bip?",
-			"Cryptographie", 1,
-			container,
-			# SOS
-			"... --- ...",
-			# desamorse
-			"-.-.  ---  -..  .  /  ---...  /  -..  .  ...  .-  --  ---  .-.  ...  .", "desamorse", "_________"
-		))
-
-		self.add_challenge(StatementAnswerChallenge(
-			len(self._challenges),
-			"Magic Hashes", "Faille de typage",
-			"Hacking", 5,
-			container,
-			"Welcome home, admin",
-			"Trouver un mot de passe pour passer la vérification d'administrateur",
-			# lambda answer: re.match("^0+e.*$", hashlib.md5(answer.encode('utf-8')).digest().decode("utf-8")) is not None,
-			lambda answer: re.match("^0+e.*$", hashlib.md5(answer.encode('utf-8')).hexdigest()) is not None,
-			None,
-			SpriteAnimation(SpriteProvider.get("Hacking1.png"), [1], [64], (616, 355))
-		))
-		self.add_challenge(StatementAnswerChallenge(
-			len(self._challenges),
-			"Can't see no evil", "On peut pas zoomer ?",
-			"Stéganographie", 1,
-			container,
-			"Decent sight ! D:",
-			"\u03b1w\u03b1 Regarde de près", "h1ddenG3m", "_________", SpriteAnimation(SpriteProvider.get('Stega1.png'), [1], [64], (640, 452))
-		))
-		self.add_challenge(StatementAnswerChallenge(
-			len(self._challenges),
-			"Counting sheep", "1, 2, 3, 4, ..., zzz",
-			"Logique", 2,
-			container,
-			"Not asleep yet? Classic.",
-			"Combien de carrés se cachent dans l'image?", lambda ans: ans == "385" or ans == "0x181", None, SpriteAnimation(SpriteProvider.get('Logic1.png'), [1], [64], (342, 342))
 		))

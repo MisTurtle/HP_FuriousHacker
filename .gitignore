@@ -1,1 +1,6 @@
 /dist/
+/build/
+/resources/sprites/*.xcf
+
+FuriousHacker.spec
+FuriousHacker Beta - Evaluation Sheet.txt

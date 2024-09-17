@@ -10,16 +10,17 @@ class SpriteAnimation:
 	MODE_CLAMPED = 0
 	MODE_CIRCULAR = 1
 
-	def __init__(self,  spritesheet: pygame.Surface, frame_count: list[int], frame_time: list[float], frame_size: tuple[int, int]):
+	def __init__(self,  spritesheet: pygame.Surface, frame_count: list[int], frame_time: list[float], frame_size: Union[tuple[int, int], None]):
 		self.spritesheet = spritesheet
 		self.frame_count = frame_count
 		self.frame_time = frame_time
-		self.frame_size = frame_size
+		self.frame_size = frame_size if frame_size is not None else (int(spritesheet.get_width() / frame_count[0]), int(spritesheet.get_height() / len(frame_count)))
 		self.forced_frame_id = None
 
 		self.animation_row = 0
 		self.animation_time = 0  # seconds
 		self.mode = self.MODE_CLAMPED
+		self.running = True
 
 	def force_frame_id(self, frame_id: Union[int, None]) -> 'SpriteAnimation':
 		self.forced_frame_id = frame_id
@@ -41,7 +42,20 @@ class SpriteAnimation:
 		return self.mode
 
 	def tick(self, dt: float):
-		self.animation_time += dt
+		if self.running:
+			self.animation_time += dt
+
+	def pause(self):
+		self.running = False
+		return self
+
+	def start(self):
+		self.running = True
+		return self
+
+	def reset(self):
+		self.animation_time = 0
+		return self
 
 	def get_frame_count(self) -> int:
 		return self.frame_count[self.animation_row]

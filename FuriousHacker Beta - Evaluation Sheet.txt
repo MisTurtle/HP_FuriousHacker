@@ -7,9 +7,7 @@ Il relève de chaque équipe de trouver sa propre organisation pour compléter u
 Photographier les énoncés et utiliser internet est autorisé et encouragé.
 
 
-1) Nb. d'épreuves réussies lors de la première utilisation : ?/12
-
-2) Nb. points obtenus lors de la première utilisation : ????
+1) Nb. d'épreuves réussies lors de la première utilisation : ?/9
 
 3) Intuitivité des contrôles : ?/10
 	[+] Remarques : ...
@@ -20,7 +18,7 @@ Photographier les énoncés et utiliser internet est autorisé et encouragé.
 5) Difficulté globale des challenges adaptée à des 3A de filières mixtes : ?/10
 	[+] Remarques : ...
 	
-6) Lisibilité des informations à l'écran (Problèmes d'affichages, couleurs pas assez différentiables, ...) : ?/10
+6) Lisibilité des informations à l'écran (Problèmes d'affichages, ...) : ?/10
 	[+] Remarques : ...
 
 7) Commentaires additionnels :

@@ -16,17 +16,16 @@ class EndScene(Scene):
 
 		logo = Sprite(
 			SpriteAnimation(SpriteProvider.get("HoneyPot_Logo_NOBG_Centered.png"), [1], [60], (1051, 1138))
-		).set_relative_height(0.33).set_anchor("center").set_relative_pos((0.5, 0.3))
+		).set_relative_width(0.20).set_anchor("center").set_relative_pos((0.5, 0.3))
 		self.add_element(logo)
 
 		qr_code = Sprite(
-			SpriteAnimation(SpriteProvider.get("HoneyPot_QR_Discord.png"), [1], [60], (485, 485))
-		).set_relative_height(0.33).set_anchor("midright").set_relative_pos((0.9, 0.3))
+			SpriteAnimation(SpriteProvider.get("DISCORD_QR_CODE.png"), [1], [60], None)
+		).set_relative_width(0.20).set_anchor("center").set_relative_pos((0.85, 0.3))
 		self.add_element(qr_code)
-		# Logo goes till 0.3 + 0.33/2 = 0.3 + 0.165 = 0.435
 
-		self.time_out_text = TextDisplay(FontSettings("resources/fonts/Start.otf", 95, ColorProvider.get("fg"))).set_content("Time Out !")
-		self.points_display = PulsingText(FontSettings("resources/fonts/Start.otf", 95, ColorProvider.get("fg"))).set_content("Résultat : 0 points")
+		self.time_out_text = TextDisplay(FontSettings("resources/fonts/PurpleSmile-Regular.otf", 75, ColorProvider.get("fg"))).set_content("Time Out !")
+		self.points_display = PulsingText(FontSettings("resources/fonts/PurpleSmile-Regular.otf", 75, ColorProvider.get("fg"))).set_content("0/0 preuves trouvées !")
 		self.points_prompt = ElementGroup([self.time_out_text, self.points_display]).set_relative_height(0.18).set_relative_width(1)
 
 		self.time_out_text.set_anchor("midtop").set_relative_height(0.45).set_relative_pos((0.5, 0))
@@ -35,5 +34,5 @@ class EndScene(Scene):
 		self.add_element(self.points_prompt.set_anchor("midtop").set_relative_pos((0.5, 0.75)))
 
 	def on_set_active(self):
-		self.points_display.set_content(f"Résultat : {challenge_manager.recompute_points():.0f} points")
+		self.points_display.set_content(f"{challenge_manager.get_points()}/{challenge_manager.get_challenge_count()} preuves trouvées !")
 		C.unglitch()

@@ -11,11 +11,13 @@ def __init_fonts():
 
 
 def __load_colors():
-	ColorProvider.set("bg", pygame.Color(0x19, 0x16, 0x2b))
-	ColorProvider.set("fg", pygame.Color(0x67, 0x8c, 0xd6))
+	# ColorProvider.set("bg", pygame.Color(0x19, 0x16, 0x2b))
+	ColorProvider.set("bg", pygame.Color(0x11, 0x11, 0x11))
+	# ColorProvider.set("fg", pygame.Color(0x67, 0x8c, 0xd6))
+	ColorProvider.set("fg", pygame.Color(0xCC, 0xCC, 0x65))
 	# ColorProvider.set("fg", pygame.Color(0xa2, 0xba, 0xeb))
-	ColorProvider.set("placeholder", pygame.Color(0x2e, 0x42, 0x61))
-	ColorProvider.set("fg2", pygame.Color(0x25, 0x32, 0x4d))
+	ColorProvider.set("placeholder", pygame.Color(0x65, 0x65, 0x15))
+	ColorProvider.set("fg2", pygame.Color(0x45, 0x45, 0x10))
 	ColorProvider.set("category", pygame.Color(0x88, 0xf7, 0x5c))
 	ColorProvider.set("error", pygame.Color(0xf2, 0x74, 0x55))
 	ColorProvider.set("star_level_0", pygame.Color(0xff, 0xff, 0xff))
