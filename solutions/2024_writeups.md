@@ -6,7 +6,7 @@
     <h3>Énoncé</h3>
     <strong>La note suivante a été trouvée auprès du PC compromis: "Nom de mon club préféré, avec des chiffres à la place des lettres 'O', 'E' et 'A'</strong>
     <br /><br />
-    Image : ![Logo du club sans le nom](../resources/sprites/HoneyPot_Logo_Nameless.png)
+    <img src="../resources/sprites/HoneyPot_Logo_Nameless.png" alt="Logo du club sans le nom" width="500px">
     <h3>Démarche</h3>
     Le nom du club préféré étant bien évidemment <i>Honeypot Hacker</i>, la démarche attendue était de remplacer les lettres par un chiffre qui leur ressemble (0=O, 3=E, 4=A)
     <details>
@@ -36,7 +36,7 @@
     <h3>Énoncé</h3>
     <strong>Connaître le système d'exploitation utilisé par le hacker pourrait nous servir à l'infiltrer à notre tour... Il s'agit probablement de celui dont le logo est présenté ci-dessous.</strong>
     <br /><br />
-    Image : ![Logo d'un système d'exploitation](../resources/sprites/kali.png)
+    <img src="../resources/sprites/kali.png" alt="Logo d'un système d'exploitation" width="500px">
     <h3>Démarche</h3>
     Effectuer une recherche Google telle que "Système d'exploitation hacker" ou bien une recherche par image du logo
     <details>
@@ -66,7 +66,7 @@
     <h3>Énoncé</h3>
     <strong>Une adresse IP revient de manière récurrente dans les logs du PC. Le résultat d'un traceroute vers cette IP est joint ci-dessous. Dans quelle ville se situe le dernier serveur à répondre à la requête?</strong>
     <br /><br />
-    Image : ![Capture d'écran d'une commande TRACERT](../resources/sprites/Network1.png)
+    <img alt="Capture d'écran d'une commande TRACERT" src="../resources/sprites/Network1.png">
     <h3>Démarche</h3>
     Identifier l'adresse IP du dernier serveur à avoir répondu à la requête (216.6.90.22). Chercher un outil de localisation d'adresse IP (Ex: <a href="https://www.iplocation.net/ip-lookup">IP Location</a>). Y entrer l'adresse IP. Détecter la ville.
     <details>
@@ -124,7 +124,7 @@
     <h3>Énoncé</h3>
     <strong>Nous avons découvert à l'instant le code source du RAT fournissant un accès à distance au PC infecté. Si on trouve le mot de passe du hacker, on pourra peut-être nous infiltrer à notre tour sur ses serveurs.</strong>
     <br /><br />
-    Image : ![Capture d'écran d'un programme rédigé en Python](../resources/sprites/ClientSide1.png)
+    <img alt="Capture d'écran d'un programme rédigé en Python" src="../resources/sprites/ClientSide1.png" width="500px">
     <h3>Démarche</h3>
     Connaître ou chercher le rôle de la fonction <code>ord</code> en Python. En déduire que la liste de nombres au début du code fournit correspond à des caractères ASCII.
     <details>
@@ -140,7 +140,7 @@
     <h3>Énoncé</h3>
     <strong>Le hacker a osé changer le fond d'écran de l'admin !!! Il doit y avoir une information cachée sur l'image si on regarde de près !</strong>
     <br /><br />
-    Image : ![Une image avec un texte caché dessus](../resources/sprites/Stega1.png)
+    <img alt="Une image avec un texte caché dessus" src="../resources/sprites/Stega1.png" width="500px">
     <h3>Démarche</h3>
     Faire attention aux détails de l'image et découvrir le texte caché par contraste indiquant la réponse à l'épreuve.
     <details>
