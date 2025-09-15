@@ -52,7 +52,7 @@ class ChallengeManager:
 			"Mot de passe faible", "Retrouve le mot de passe du PC",
 			"Logique", 1,
 			container, "Utilise toujours un mot de passe solide !",
-			"La note suivante a été trouvée auprès du PC compromis:\n\n\"Nom de mon club préféré, avec des chiffres à la place des voyelles.\"",
+			"La note suivante a été trouvée auprès du PC compromis:\n\n\"Nom de mon club préféré, avec des chiffres à la place des lettres 'O', 'E' et 'A'.\"",
 			"H0n3yp0t H4ck3r", "________ ______",
 			SpriteAnimation(SpriteProvider.get("HoneyPot_Logo_Nameless.png"), [1], [64], None)
 		))
