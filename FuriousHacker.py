@@ -27,7 +27,7 @@ pygame.init()
 info = pygame.display.Info()
 C.DISPLAY_SIZE = info.current_w, info.current_h
 C.DISPLAY_RECT = pygame.Rect((0, 0), C.DISPLAY_SIZE)
-screen = pygame.display.set_mode(C.DISPLAY_SIZE, pygame.FULLSCREEN)
+screen = pygame.display.set_mode(C.DISPLAY_SIZE)#, pygame.FULLSCREEN)
 
 # Initialize base providers (font, sprite, ...)
 providers.init()
@@ -74,10 +74,6 @@ def glitch_shader(screen: pygame.Surface, t: float):
 		_pos_a = random.randint(_block_size[0] * 2, screen.get_width() - _block_size[0] * 2), random.randint(_block_size[1] * 2, screen.get_height() - _block_size[1] * 2)
 		_pos_b = _pos_a[0] + 0.5 * block_size[0] * (-1 if random.random() < 0.5 else 1), _pos_a[1] + block_size[1] * random.randint(-1, 1)
 		_frame_a, _frame_b = screen.subsurface(_pos_a, _block_size).copy(), screen.subsurface(_pos_b, _block_size).copy()
-		# dark = pygame.Surface(_frame_b.get_size())
-		# dark.set_alpha(random.randint(30, 60))
-		# dark.fill((0, 0, 0))
-		# _frame_b.blit(dark, (0, 0))
 		return _frame_a, _frame_b, _pos_a, _pos_b
 
 	for _ in range(random.randint(20, 35)):

@@ -266,14 +266,14 @@ class ChallengeCard(ElementGroup, Hoverable):
 		self.anim_start_pos = C.DISPLAY_RECT.centerx - self.width / 2, C.DISPLAY_RECT.centery - self.height / 2
 
 		entry_animation = Animation(self.ENTRY_DURATION)
-		entry_animation.set_progress_percent((challenge_manager.get_challenge_count() - challenge.get_id()) / (1.3 * challenge_manager.get_challenge_count()))
+		entry_animation.set_progress_percent(-(challenge_manager.get_challenge_count() - challenge.get_id()) / (1.3 * challenge_manager.get_challenge_count()))
 		entry_animation.set_speed(-1).set_end_behavior(lambda anim: anim.reverse() if anim.get_speed() < 0 else anim.pause())
 		self.add_animation("entry", entry_animation.start())
 
 		s, coeff = C.DISPLAY_SIZE, 0.75
 		a, b = max(s[0], s[1]) * coeff / 2, min(s[0], s[1]) * coeff / 2
 		fixed_center = s[0] / 2 - self.width / 2, s[1] / 2 - self.height / 2
-		self.target_location = point_in_elliptical_disk(2 * math.pi * challenge.get_id() / challenge_manager.get_challenge_count(), fixed_center, a, b)
+		self.target_location = point_in_elliptical_disk(2 * math.pi * challenge.get_id() / challenge_manager.get_challenge_count() - math.pi, fixed_center, a, b)
 		self._completed = False
 
 	def get_start_button(self) -> Button:

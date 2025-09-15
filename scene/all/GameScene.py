@@ -14,7 +14,7 @@ from utils import C
 
 class GameScene(Scene):
 
-	GAME_TIME = 60 * 10  # seconds
+	GAME_TIME = 10 * 60  # seconds
 	# GAME_TIME = 20  # seconds
 
 	challenge_interface: ChallengeInterface = None
@@ -25,11 +25,11 @@ class GameScene(Scene):
 		super().__init__()
 
 		# Create Timer Text
-		self.points_display = TextDisplay(FontSettings("resources/fonts/Start.otf", 95, ColorProvider.get("fg"))).set_content("Preuves : 0/0")
+		self.points_display = TextDisplay(FontSettings("resources/fonts/Start.otf", 65, ColorProvider.get("fg"))).set_content("Preuves : 0/0")
 		self.global_countdown = Timer(FontSettings("resources/fonts/Code.ttf", 65, ColorProvider.get("fg")), clock=self.GAME_TIME).as_countdown()
 		self.display_group = ElementGroup([self.points_display, self.global_countdown])
 		self.display_group.set_anchor("center").set_relative_pos((0.5, 0.5))
-		self.points_display.set_relative_pos((0.5, 0.5)).move((0, - int(self.points_display.height / 2)))
+		self.points_display.set_relative_pos((0.5, 0.5)).move((0, - int(self.points_display.height)))
 		self.global_countdown.set_relative_pos((0.5, 0.5)).move((0, int(self.points_display.height / 2)))
 		self.add_element(self.display_group)
 
@@ -39,6 +39,7 @@ class GameScene(Scene):
 		# Create Challenge Interface
 		self.challenge_interface = ChallengeInterface([]).set_background_color(ColorProvider.get("bg"))
 		self.global_countdown.on("timer_end", lambda: scene_manager.set_active_scene(scene_manager.END_SCENE))
+		self.global_countdown.start()
 
 	def on_set_active(self):
 		# Create End Timer Hooks
@@ -74,7 +75,7 @@ class GameScene(Scene):
 		self.global_countdown.clear_triggers()
 
 	def update_points_display(self):
-		self.points_display.set_content(f"Preuves : {challenge_manager.get_points()}/{challenge_manager.get_challenge_count()}")
+		self.points_display.set_content(f"Preuves : {challenge_manager.get_completed_challs()}/{challenge_manager.get_challenge_count()}\nPoints : {challenge_manager.get_points()}/{challenge_manager.get_max_points()}")
 
 	def start_challenge(self, chall: Challenge):
 		if self.active_challenge is not None:
@@ -110,7 +111,7 @@ class GameScene(Scene):
 				el.get_start_button().set_enabled(True)
 
 		if self.active_challenge is not None and self.active_challenge.is_complete():
-			challenge_manager.add_point()
+			challenge_manager.add_point(n_challs=1, n_points=self.active_challenge.get_difficulty())
 		self.active_challenge = None
 		self.update_points_display()
 
