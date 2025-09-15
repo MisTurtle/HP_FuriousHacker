@@ -1,13 +1,7 @@
 {
-  "ecran": "rcnea",
-  "clavier": "ialcevr",
+  "ecran": "nacre",
+  "ram": "arm",
+  "clavier": "reivalc",
   "processeur": "rsurpceoes",
-  "carte graphique": "raetc epihaqgur",
-  "alimentation": "anitmonlaiet",
-  "disque": "usedqi",
-  "microphone": "eominchpro",
-  "carte mere": "traec reem",
-  "souris": "isrous",
-  "camera": "cmraea",
-  "memoire ram": "imeoerm mra"
+  "carte graphique": "raetc epihaqgur"
 }
